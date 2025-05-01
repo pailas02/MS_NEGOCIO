@@ -1,16 +1,18 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'maquinas'
+  protected tableName = 'turnos'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.string('marca', 50).notNullable()
-      table.string('modelo', 50).notNullable()
-      table.string('estado', 50).notNullable()
-      
+      table.integer('maquina_id').unsigned().references('id').inTable('maquinas').onDelete('CASCADE')
+      table.integer('operario_id').unsigned().references('id').inTable('operarios').onDelete('CASCADE')
+      table.boolean('estado').notNullable()
+      table.datetime('fecha_inicio', { useTz: true })
+      table.datetime('fecha_fin', { useTz: true })
+
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

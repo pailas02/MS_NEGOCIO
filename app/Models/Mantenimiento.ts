@@ -1,6 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, HasOne, hasOne, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import Maquina from './Maquina'
+import Procedimiento from './Procedimiento'
 
 export default class Mantenimiento extends BaseModel {
   @column({ isPrimary: true })
@@ -10,11 +11,20 @@ export default class Mantenimiento extends BaseModel {
   public fecha: DateTime
   @column()
   public estado: string
-  
-  @hasMany(() => Maquina, {
-    foreignKey: 'maquinaId',
+
+  @hasOne(() => Maquina, {
+    foreignKey: 'mantenimientoId',
   })
-  public maquinas: HasMany<typeof Maquina>
+  public maquina: HasOne<typeof Maquina>
+
+  @manyToMany(() => Procedimiento, {
+    pivotTable: 'mantenimiento_procedimiento',
+    localKey: 'id',
+    relatedKey: 'id',
+    pivotForeignKey: 'mantenimiento_id',
+    pivotRelatedForeignKey: 'procedimiento_id',
+  })
+  public procedimientos: ManyToMany<typeof Procedimiento>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

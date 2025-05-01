@@ -1,17 +1,18 @@
 import { DateTime } from 'luxon'
-import { BaseModel,  column } from '@ioc:Adonis/Lucid/Orm'
-export default class Gps extends BaseModel {
+import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+
+export default class Seguro extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
-  @column()
-  public latitud: String
-  
-  @column()
-  public longitud: String
 
   @column()
-  public maquina_id: number
+  public nombre: string
+  @column()
+  public descripcion: string
+  @column()
+  public costo: number
+
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

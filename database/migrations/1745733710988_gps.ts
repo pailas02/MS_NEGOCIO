@@ -9,7 +9,7 @@ export default class extends BaseSchema {
 
       table.string('latitud', 50).notNullable()
       table.string('longitud', 50).notNullable()
-      table.string('maquina_id', 50).notNullable().references('id').inTable('maquinas').onDelete('CASCADE')
+      table.integer('maquina_id', 50).notNullable().references('id').inTable('maquinas').onDelete('CASCADE')
 
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })

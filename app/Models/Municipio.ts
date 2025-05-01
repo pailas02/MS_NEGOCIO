@@ -14,9 +14,6 @@ export default class Municipio extends BaseModel {
   public ubicacion: string
 
   @column()
-  public departamentoId: number
-
-  @column()
   public historico: string
 
   @belongsTo(() => Departameto, {
