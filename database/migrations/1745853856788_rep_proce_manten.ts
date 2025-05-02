@@ -1,15 +1,16 @@
 import BaseSchema from '@ioc:Adonis/Lucid/Schema'
 
 export default class extends BaseSchema {
-  protected tableName = 'municipios'
+  protected tableName = 'rep_proce_manten'
 
   public async up () {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.string('nombre', 50).notNullable()
-      table.integer('departamento_id').unsigned().references('id').inTable('departamentos').onDelete('CASCADE')
-
+      table.integer('repuesto_id').unsigned().references('id').inTable('repuestos').onDelete('CASCADE')
+      table.integer('procedimiento_mantenimiento_id').unsigned().references('id').inTable('procedimiento_mantenimientos').onDelete('CASCADE')
+      table.integer('cantidad').notNullable()
+      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

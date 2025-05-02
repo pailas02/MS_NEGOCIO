@@ -9,6 +9,8 @@ export default class Poliza extends BaseModel {
   public idOperario: number
   @column()
   public idMaquina: number
+  @column()
+  public idSeguro: number
   @column.dateTime()
   public fechaInicio: DateTime
   @column.dateTime()

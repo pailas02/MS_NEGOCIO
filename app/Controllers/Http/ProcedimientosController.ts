@@ -31,8 +31,7 @@ export default class ProcedimientosController {
         const body = request.body()
         const theProcedimiento = await Procedimiento.findOrFail(params.id)
         theProcedimiento.nombre = body.nombre
-        theProcedimiento.descripcion = body.descripcion
-        theProcedimiento.mantenimientos = body.mantenimientos
+        theProcedimiento.descripcion = body.descripcion 
         return await theProcedimiento.save()
     }
     //delete

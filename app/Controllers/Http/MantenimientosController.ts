@@ -30,8 +30,8 @@ export default class MantenimientosController {
     public async update({ params, request }: HttpContextContract) {
         const body = request.body()
         const theMantenimiento = await Mantenimiento.findOrFail(params.id)
-        theMantenimiento.estado = body.estado
         theMantenimiento.fecha = body.fecha
+        theMantenimiento.estado = body.estado
         theMantenimiento.maquina = body.maquinaId
         return await theMantenimiento.save()
     }

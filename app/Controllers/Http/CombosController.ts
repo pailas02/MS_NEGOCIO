@@ -1,27 +1,27 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Maquina from 'App/Models/Maquina';
+import Combo from 'App/Models/Combo';
 
-export default class MaquinasController {
+export default class CombosController {
     //create
     public async create({ request }: HttpContextContract) {
         const body = request.body()
-        const theMaquina = await Maquina.create(body)
-        return theMaquina
+        const theCombo = await Combo.create(body)
+        return theCombo
     }
 
     //read
     public async find({ request, params }: HttpContextContract) {
         if (params.id) {
-            let theMaquina = await Maquina.findOrFail(params.id)
-            return theMaquina
+            let theCombo = await Combo.findOrFail(params.id)
+            return theCombo
         } else {
             const data = request.all()
             if ('page' in data && 'per_page' in data) {
                 const page = request.input('page', 1)
                 const perPage = request.input('per_page', 20)
-                return await Maquina.query().paginate(page, perPage)
+                return await Combo.query().paginate(page, perPage)
             } else {
-                return await Maquina.query()
+                return await Combo.query()
             }
         }
     }
@@ -29,16 +29,14 @@ export default class MaquinasController {
     //update    
     public async update({ params, request }: HttpContextContract) {
         const body = request.body()
-        const theMaquina = await Maquina.findOrFail(params.id)
-        theMaquina.marca = body.marca
-        theMaquina.modelo = body.modelo
-        theMaquina.estado = body.estado
-        return await theMaquina.save()
+        const theCombo = await Combo.findOrFail(params.id)
+        theCombo.descripcion = body.descripcion
+        return await theCombo.save()
     }
     //delete
     public async delete({ params, response }: HttpContextContract) {
-        const theMaquina = await Maquina.findOrFail(params.id)
+        const theCombo = await Combo.findOrFail(params.id)
         response.status(204)
-        return await theMaquina.delete()
+        return await theCombo.delete()
     }
 }

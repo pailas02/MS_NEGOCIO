@@ -7,10 +7,12 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('gobernante_id').unsigned().references('id').inTable('gobernantes').onDelete('CASCADE')
-      table.integer('municipio_id').unsigned().references('id').inTable('municipios').onDelete('CASCADE')
+      table.integer('gobernante_id').unsigned().notNullable().references('id').inTable('gobernantes').onDelete('CASCADE')
+      table.integer('municipio_id').unsigned().notNullable().references('id').inTable('municipios').onDelete('CASCADE')
+      table.date('fecha_inicio').notNullable()
+      table.date('fecha_fin').notNullable()
       table.string('historico').notNullable()
-      
+
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

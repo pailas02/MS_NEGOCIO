@@ -9,10 +9,7 @@ export default class Gobernante extends BaseModel {
   public id: number
 
   @column()
-  public nombre: string
-
-  @column()
-  public cargo: string
+  public user_id: number
 
   @column()
   public periodoInicio: string
@@ -20,24 +17,21 @@ export default class Gobernante extends BaseModel {
   @column()
   public periodoFin: string
 
-  @belongsTo(() => Departameto, {
-    foreignKey: 'departamentoId',
-  })
-  public departamento: BelongsTo<typeof Departameto>
-  
-@manyToMany(() => Municipio, {
+
+
+  @manyToMany(() => Municipio, {
     pivotTable: 'gobernante_municipio',
     pivotForeignKey: 'gobernante_id',  
     pivotRelatedForeignKey: 'municipio_id', 
   })
   public municipios: ManyToMany<typeof Municipio>
 
-  @manyToMany(() => Obra, {
-    pivotTable: 'gobernante_obra',
+  @manyToMany(() => Departameto, {
+    pivotTable: 'gobernante_departamento',
     pivotForeignKey: 'gobernante_id',  
-    pivotRelatedForeignKey: 'obra_id', 
+    pivotRelatedForeignKey: 'departamento_id', 
   })
-  public obras: ManyToMany<typeof Obra>
+  public departamento: ManyToMany<typeof Departameto>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

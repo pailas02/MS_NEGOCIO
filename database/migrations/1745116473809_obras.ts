@@ -9,8 +9,7 @@ export default class extends BaseSchema {
 
       table.string('nombre').notNullable()
       table.string('descripcion').notNullable()
-      table.string('municipio_id').notNullable().references('id').inTable('municipios').onDelete('CASCADE')
-
+      table.integer('municipio_id').unsigned().references('id').inTable('municipios').onDelete('CASCADE')
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

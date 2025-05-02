@@ -32,7 +32,7 @@ export default class GpssController {
         const theGps = await Gps.findOrFail(params.id)
         theGps.latitud = body.latitud
         theGps.longitud = body.longitud
-        theGps.maquina = body.maquinaId
+        theGps.maquina_id = body.maquinaId
 
         return await theGps.save()
     }

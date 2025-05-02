@@ -1,20 +1,18 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
 
-export default class GobernanteMunicipio extends BaseModel {
+export default class GobernanteDepartameto extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
   public gobernanteId: number
   @column()
-  public municipioId: number
+  public departamentoId: number
   @column()
   public fechaInicio: string
   @column()
   public fechaFin: string
-  @column()
-  public historico: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

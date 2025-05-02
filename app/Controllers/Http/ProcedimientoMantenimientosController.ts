@@ -30,7 +30,10 @@ export default class ProcedimientoMantenimientosController {
     public async update({ params, request }: HttpContextContract) {
         const body = request.body()
         const theProcedimientoMantenimiento = await ProcedimientoMantenimiento.findOrFail(params.id)
-        theProcedimientoMantenimiento.
+        theProcedimientoMantenimiento.mantenimientoId = body.mantenimientoId
+        theProcedimientoMantenimiento.procedimientoId = body.procedimientoId
+        theProcedimientoMantenimiento.estado = body.estado
+        theProcedimientoMantenimiento.observaciones = body.observaciones
         return await theProcedimientoMantenimiento.save()
     }
     //delete

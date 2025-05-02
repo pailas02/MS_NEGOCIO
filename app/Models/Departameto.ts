@@ -10,9 +10,6 @@ export default class Departameto extends BaseModel {
   @column()
   public nombre: string
 
-  @column()
-  public ubicacio: string
-
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 
