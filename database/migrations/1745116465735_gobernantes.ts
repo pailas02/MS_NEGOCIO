@@ -9,6 +9,7 @@ export default class extends BaseSchema {
       table.integer('user_id', 50).notNullable()
       table.string('periodo_inicio', 50).notNullable()
       table.string('periodo_fin', 50).notNullable();
+      table.string('tipo', 50).notNullable()
        table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

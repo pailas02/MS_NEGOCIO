@@ -17,6 +17,9 @@ export default class Gobernante extends BaseModel {
   @column()
   public periodoFin: string
 
+  @column()
+  public tipo: string
+
 
 
   @manyToMany(() => Municipio, {
