@@ -30,10 +30,10 @@ export default class Servicio extends BaseModel {
   })
   public combo: HasOne<typeof Combo>
 
-  @belongsTo(() => Cuota, {
+  @hasOne(() => Cuota, {
     foreignKey: 'cuotaId', 
   })
-  public cuota: BelongsTo<typeof Cuota>
+  public cuota: HasOne<typeof Cuota>
 
   @belongsTo(() => Evidancia, {
     foreignKey: 'evidenciaId',

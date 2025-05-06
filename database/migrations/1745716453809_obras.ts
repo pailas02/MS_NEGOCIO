@@ -9,8 +9,21 @@ export default class extends BaseSchema {
 
       table.string('nombre').notNullable()
       table.string('descripcion').notNullable()
-      table.integer('municipio_id').unsigned().references('id').inTable('municipios').onDelete('CASCADE')
-      table.integer('combo_id').unsigned().references('id').inTable('combos').onDelete('CASCADE')
+      table
+        .integer('municipioId')
+        .unsigned()
+        .notNullable()
+        .references('id')
+        .inTable('municipios')
+        .onDelete('CASCADE')
+
+      table
+        .integer('combo_id')
+        .unsigned()
+        .references('id')
+        .inTable('combos')
+        .onDelete('CASCADE')
+
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })

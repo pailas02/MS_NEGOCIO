@@ -1,8 +1,7 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import Municipio from './Municipio'
-import Departameto from './Departameto'
-import Obra from './Obra'
+import Departameto from './Departamento'
 
 export default class Gobernante extends BaseModel {
   @column({ isPrimary: true })
@@ -13,6 +12,8 @@ export default class Gobernante extends BaseModel {
 
   @column()
   public periodoInicio: string
+
+  
 
   @column()
   public periodoFin: string
@@ -34,7 +35,7 @@ export default class Gobernante extends BaseModel {
     pivotForeignKey: 'gobernante_id',  
     pivotRelatedForeignKey: 'departamento_id', 
   })
-  public departamento: ManyToMany<typeof Departameto>
+  public departamentos: ManyToMany<typeof Departameto>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

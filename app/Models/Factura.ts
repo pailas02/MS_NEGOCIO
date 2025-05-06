@@ -7,11 +7,10 @@ export default class Factura extends BaseModel {
   public id: number
 
   @column()
-  public monto: number
+  public detalle: string
 
   @column()
-  public estado: string
-  
+  public id_cuota: number
   
   @column.date()
   public fechaPago: DateTime | null

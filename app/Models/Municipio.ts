@@ -1,7 +1,7 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import Gobernante from './Gobernante'
-import Departameto from './Departameto'
+import Departameto from './Departamento'
 
 export default class Municipio extends BaseModel {
   @column({ isPrimary: true })

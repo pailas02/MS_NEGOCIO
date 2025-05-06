@@ -7,8 +7,7 @@ export default class extends BaseSchema {
     this.schema.createTable(this.tableName, (table) => {
       table.increments('id')
 
-      table.integer('monto').notNullable()
-      table.string('estado', 50).notNullable()
+      table.string('detalle').notNullable()
       table.date('fecha_pago').notNullable()
       table.integer('cuota_id').unsigned().references('id').inTable('cuotas').onDelete('CASCADE')
       

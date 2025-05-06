@@ -24,6 +24,7 @@ export default class CuotaValidator {
    *    ```
    */
   public schema = schema.create({ 
+    id_servicio: schema.number([rules.required(), rules.range(1, 99999999)]),
     monto: schema.number([rules.required(), rules.range(0, 99999999)]),
     estado: schema.string({ trim: true }, [rules.required(), rules.maxLength(255)]),
   })

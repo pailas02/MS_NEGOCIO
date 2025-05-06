@@ -1,5 +1,5 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import GobernanteDepartameto from 'App/Models/GobernanteDepartameto';
+import GobernanteDepartameto from 'App/Models/GobernanteDepartamento';
 import GobernanteDepartametoValidator from 'App/Validators/GobernanteDepartametoValidator';
 
 export default class GobernanteDepartametosController {
