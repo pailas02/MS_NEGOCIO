@@ -24,10 +24,10 @@ export default class ObraMunicipioValidator {
    *    ```
    */
   public schema = schema.create({
-    obraid: schema.number([
+    obraId: schema.number([
       rules.exists({ table: 'obras', column: 'id' }),
     ]),
-    municipioid: schema.number([
+    municipioId: schema.number([
       rules.exists({ table: 'municipios', column: 'id' }),
     ]),
   })

@@ -1,7 +1,7 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, CustomMessages } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class MantenimientoValidator {
+export default class UsuarioValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -23,13 +23,7 @@ export default class MantenimientoValidator {
    *     ])
    *    ```
    */
-  public schema = schema.create({
-    fecha: schema.date({ format: 'yyyy-MM-dd' }),
-    estado: schema.string(),
-    maquinaId: schema.number([
-      rules.exists({ table: 'maquinas', column: 'id' }),
-    ]),
-  })
+  public schema = schema.create({})
 
   /**
    * Custom messages for validation failures. You can make use of dot notation `(.)`
@@ -42,7 +36,5 @@ export default class MantenimientoValidator {
    * }
    *
    */
-  public messages: CustomMessages = {
-
-  }
+  public messages: CustomMessages = {}
 }

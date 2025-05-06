@@ -24,17 +24,22 @@ export default class GpValidator {
    *    ```
    */
   public schema = schema.create({
-    nombre: schema.string({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(50),
-      rules.regex(/^[a-zA-Z\s]+$/),
+    latitud: schema.string([
+      rules.required(),
+      rules.regex(/^\d+(\.\d+)?$/), // Validar que sea un número decimal
+      rules.minLength(1),
+      rules.maxLength(20),
     ]),
-    descripcion: schema.string.optional({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(255),
+    longitud: schema.string([
+      rules.required(),
+      rules.regex(/^\d+(\.\d+)?$/), // Validar que sea un número decimal
+      rules.minLength(1),
+      rules.maxLength(20),
     ]),
-    fechaInicio: schema.date(),
-    fechaFin: schema.date(),
+    maquinaId: schema.number([
+      rules.required(),
+      rules.exists({ table: 'maquinas', column: 'id' }), // Validar que la máquina exista
+    ]),
   })
 
   /**

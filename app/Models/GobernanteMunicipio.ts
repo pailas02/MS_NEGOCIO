@@ -10,9 +10,9 @@ export default class GobernanteMunicipio extends BaseModel {
   @column()
   public municipioId: number
   @column()
-  public fechaInicio: string
+  public fechaInicio: DateTime
   @column()
-  public fechaFin: string
+  public fechaFin: DateTime
   @column()
   public historico: string
 

@@ -2,7 +2,6 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Mensaje from 'App/Models/Mensaje'
 import MensajeValidator from 'App/Validators/MensajeValidator'
 import Chat from 'App/Models/Chat'
-import Usuario from 'App/Models/Usuario'
 import axios from 'axios'
 import Env from '@ioc:Adonis/Core/Env'
 

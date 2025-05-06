@@ -11,6 +11,8 @@ export default class Mantenimiento extends BaseModel {
   public fecha: DateTime
   @column()
   public estado: string
+  @column()
+  public maquinaId: number
 
   @hasOne(() => Maquina, {
     foreignKey: 'mantenimientoId',

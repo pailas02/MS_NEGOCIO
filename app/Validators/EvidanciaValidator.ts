@@ -19,7 +19,7 @@ export default class EvidanciaValidator {
       rules.range(1, 99999999),
       rules.exists({ table: 'servicios', column: 'id' }),
     ]),
-    novedad_id: schema.number([
+    novedadId: schema.number([
       rules.exists({ table: 'novedades', column: 'id' })
     ])
 

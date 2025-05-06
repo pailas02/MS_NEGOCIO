@@ -10,9 +10,11 @@ export default class GobernanteDepartameto extends BaseModel {
   @column()
   public departamentoId: number
   @column()
-  public fechaInicio: string
+  public fechaInicio: DateTime
   @column()
-  public fechaFin: string
+  public fechaFin: DateTime
+  @column()
+  public historico: string
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

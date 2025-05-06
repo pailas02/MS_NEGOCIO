@@ -15,11 +15,11 @@ export default class Servicio extends BaseModel {
   @column()
   public tipoServicio: string
   @column()
-  public fechaInicio: string
+  public fechaInicio: DateTime
   @column()
-  public fechaFin: string
+  public fechaFin: DateTime
   @column()
-  public estado: string
+  public estado: String
   @column()
   public ubicacion: string
   @column()

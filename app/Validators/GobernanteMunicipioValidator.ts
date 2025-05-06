@@ -25,19 +25,24 @@ export default class GobernanteMunicipioValidator {
    *    ```
    */
   public schema = schema.create({
-    Municipio_id: schema.number([
-      rules.exists({ table: 'municipios', column: 'id' }),
-      rules.unsigned(),
-    ]),
-    Gobernante_id: schema.number([
+    GobernanteId: schema.number([
       rules.exists({ table: 'gobernantes', column: 'id' }),
-      rules.unsigned(),
     ]),
-    fecha_inicio: schema.date({ format: 'yyyy-MM-dd' }, [
+    municipioId: schema.number([
+      rules.exists({ table: 'municipios', column: 'id' }),
     ]),
-    fecha_fin: schema.date({ format: 'yyyy-MM-dd' }, [
+    fechaInicio: schema.date({
+      format: 'yyyy-MM-dd',
+    }),
+    fechaFin: schema.date({
+      format: 'yyyy-MM-dd',
+    }),
+    fechafin: schema.date({
+      format: 'yyyy-MM-dd',
+    }),
+    historico: schema.string.optional([
+      rules.maxLength(255),
     ]),
-    historico: schema.boolean.optional(),
   })
 
   /**
@@ -52,14 +57,15 @@ export default class GobernanteMunicipioValidator {
    *
    */
   public messages: CustomMessages = {
-    'Municipio_id.required': 'El ID del municipio es obligatorio',
-    'Municipio_id.exists': 'El ID del municipio no existe',
-    'Gobernante_id.required': 'El ID del gobernante es obligatorio',
-    'Gobernante_id.exists': 'El ID del gobernante no existe',
-    'fecha_inicio.required': 'La fecha de inicio es obligatoria',
-    'fecha_fin.required': 'La fecha de fin es obligatoria',
-    'historico.boolean': 'El campo historico debe ser verdadero o falso',
-    'Gobernante_id.unsigned': 'El ID del gobernante debe ser un número positivo',
-    'Municipio_id.unsigned': 'El ID del municipio debe ser un número positivo',
-  }
+    'GobernanteId.required': 'El ID del gobernante es obligatorio',
+    'GobernanteId.exists': 'El ID del gobernante no existe',
+    'municipioId.required': 'El ID del municipio es obligatorio',
+    'municipioId.exists': 'El ID del municipio no existe',
+    'fechaInicio.required': 'La fecha de inicio es obligatoria',
+    'fechaInicio.dateFormat': 'La fecha de inicio debe tener el formato YYYY-MM-DD',
+    'fechaFin.required': 'La fecha de fin es obligatoria',
+    'fechaFin.dateFormat': 'La fecha de fin debe tener el formato YYYY-MM-DD',
+    'historico.string': 'El campo historico debe ser una cadena de texto',
+    // Agrega más mensajes personalizados según sea necesario
+   }
 }

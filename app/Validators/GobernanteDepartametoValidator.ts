@@ -32,9 +32,13 @@ export default class GobernanteDepartamentoValidator {
       rules.exists({ table: 'gobernantes', column: 'id' }),
       rules.unsigned(),
     ]),
-    fecha_inicio: schema.date({ format: 'yyyy-MM-dd' }, []),
-    fecha_fin: schema.date({ format: 'yyyy-MM-dd' }, []),
-    historico: schema.boolean.optional(),
+    fecha_inicio: schema.date({
+      format: 'yyyy-MM-dd',
+    }),
+    fecha_fin: schema.date({
+      format: 'yyyy-MM-dd',
+    }),
+    historico: schema.string.optional(),
   })
 
   /**

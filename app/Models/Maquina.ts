@@ -16,7 +16,9 @@ export default class Maquina extends BaseModel {
   public estado: string
 
   @hasOne(() => Gps, {
-    foreignKey: 'maquinaId',
+    foreignKey: 'Gps_id',
+    localKey: 'id',
+    
   })
   public gps: HasOne<typeof Gps>
 
