@@ -1,45 +1,53 @@
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import ProcedimientoMantenimiento from 'App/Models/ProcedimientoMantenimiento';
+import ProcedimientoMantenimientoValidator from 'App/Validators/ProcedimientoMantenimientoValidator';
 
 export default class ProcedimientoMantenimientosController {
-    //create
-    public async create({ request }: HttpContextContract) {
-        const body = request.body()
-        const theProcedimientoMantenimiento = await ProcedimientoMantenimiento.create(body)
-        return theProcedimientoMantenimiento
+    // Crear un nuevo ProcedimientoMantenimiento
+    //  GET /ProcedimientoMantenimientos
+  public async index({ request }: HttpContextContract) {
+    const data = request.all()
+    if ("page" in data && "per_page" in data) {
+      const page = request.input('page', 1);
+      const perPage = request.input("per_page", 20);
+      return await ProcedimientoMantenimiento.query().paginate(page, perPage)
+    } else {
+      return await ProcedimientoMantenimiento.query()
     }
+  }
 
-    //read
-    public async find({ request, params }: HttpContextContract) {
-        if (params.id) {
-            let theProcedimientoMantenimiento = await ProcedimientoMantenimiento.findOrFail(params.id)
-            return theProcedimientoMantenimiento
-        } else {
-            const data = request.all()
-            if ('page' in data && 'per_page' in data) {
-                const page = request.input('page', 1)
-                const perPage = request.input('per_page', 20)
-                return await ProcedimientoMantenimiento.query().paginate(page, perPage)
-            } else {
-                return await ProcedimientoMantenimiento.query()
-            }
-        }
-    }
+  // Listar ProcedimientoMantenimiento by ID
+    // GET /ProcedimientoMantenimientos/:id
+  public async show({ params }: HttpContextContract) {
+    return await ProcedimientoMantenimiento.findOrFail(params.id)
+  }
 
-    //update    
-    public async update({ params, request }: HttpContextContract) {
-        const body = request.body()
-        const theProcedimientoMantenimiento = await ProcedimientoMantenimiento.findOrFail(params.id)
-        theProcedimientoMantenimiento.mantenimientoId = body.mantenimientoId
-        theProcedimientoMantenimiento.procedimientoId = body.procedimientoId
-        theProcedimientoMantenimiento.estado = body.estado
-        theProcedimientoMantenimiento.observaciones = body.observaciones
-        return await theProcedimientoMantenimiento.save()
-    }
-    //delete
-    public async delete({ params, response }: HttpContextContract) {
-        const theProcedimientoMantenimiento = await ProcedimientoMantenimiento.findOrFail(params.id)
-        response.status(204)
-        return await theProcedimientoMantenimiento.delete()
-    }
+  public async store({ request }: HttpContextContract) {
+    const payload = await request.validate(ProcedimientoMantenimientoValidator);
+    const theProcedimientoMantenimiento: ProcedimientoMantenimiento = await ProcedimientoMantenimiento.create(payload);
+    return theProcedimientoMantenimiento;
+  }
+
+  // Actualizar an ProcedimientoMantenimiento
+    // PUT /ProcedimientoMantenimientos/:id
+  public async update({ params, request }: HttpContextContract) {
+    const theProcedimientoMantenimiento: ProcedimientoMantenimiento = await ProcedimientoMantenimiento.findOrFail(params.id);
+    const payload = await request.validate(ProcedimientoMantenimientoValidator);
+    theProcedimientoMantenimiento.mantenimientoId = payload.mantenimientoId;
+    theProcedimientoMantenimiento.procedimientoId = payload.procedimientoId;
+    theProcedimientoMantenimiento.estado = payload.estado ?? '';
+    theProcedimientoMantenimiento.observaciones = payload.observaciones ?? '';
+    theProcedimientoMantenimiento.fecha = payload.fecha ?? theProcedimientoMantenimiento.fecha;
+
+    return await theProcedimientoMantenimiento.save();
+  }
+
+  // Eliminar an ProcedimientoMantenimiento
+    // DELETE /ProcedimientoMantenimientos/:id
+  public async destroy({ params, response }: HttpContextContract) {
+    const theProcedimientoMantenimiento: ProcedimientoMantenimiento = await ProcedimientoMantenimiento.findOrFail(params.id);
+    await theProcedimientoMantenimiento.delete();
+    response.status(204);
+    return;
+  }
 }

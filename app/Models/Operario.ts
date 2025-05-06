@@ -1,8 +1,8 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
 import Especialidad from './Especialidad'
-import Turno from './Turno'
 import Maquina from './Maquina'
+
 
 export default class Operario extends BaseModel {
   @column({ isPrimary: true })

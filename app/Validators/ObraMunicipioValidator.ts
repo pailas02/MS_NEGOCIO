@@ -1,7 +1,7 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class ObraValidator {
+export default class ObraMunicipioValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,16 +24,12 @@ export default class ObraValidator {
    *    ```
    */
   public schema = schema.create({
-    nombre: schema.string({ trim: true }, [
-      rules.maxLength(255)
+    obraid: schema.number([
+      rules.exists({ table: 'obras', column: 'id' }),
     ]),
-    comboId: schema.number([
-      rules.exists({ table: 'combos', column: 'id' })
+    municipioid: schema.number([
+      rules.exists({ table: 'municipios', column: 'id' }),
     ]),
-    descripcion: schema.string({ trim: true }, [
-      rules.maxLength(255)
-    ]),
-
   })
 
   /**

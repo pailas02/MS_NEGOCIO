@@ -1,6 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
-import EspecialidadMaquina from './EspecialidadMaquina'
+import EspecialidadMaquina from './Especialidad'
 
 export default class TipoServicio extends BaseModel {
   @column({ isPrimary: true })

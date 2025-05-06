@@ -8,6 +8,7 @@ export default class extends BaseSchema {
       table.increments('id')
 
       
+      table.date('fecha').notNullable()
       table.integer('idChat').unsigned().references('id').inTable('chats').onDelete('CASCADE')
       table.string('idUsuario', 255).notNullable()
       table.string('mensaje', 255).notNullable()

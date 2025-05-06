@@ -11,7 +11,7 @@ export default class Turno extends BaseModel {
   @column()
   public operarioId: number
   @column() 
-  public estado: boolean
+  public estado: string
   @column.dateTime()
   public fechaInicio: DateTime
   @column.dateTime()

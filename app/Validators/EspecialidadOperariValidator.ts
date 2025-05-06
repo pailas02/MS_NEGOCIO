@@ -1,7 +1,8 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import Especialidad from 'App/Models/Especialidad'
 
-export default class ObraValidator {
+export default class EspecialidadOperariValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,14 +25,13 @@ export default class ObraValidator {
    *    ```
    */
   public schema = schema.create({
-    nombre: schema.string({ trim: true }, [
-      rules.maxLength(255)
+    EspecialidadId : schema.number([
+      rules.exists({ table: 'especialidades', column: 'id' }),
+      rules.unsigned(),
     ]),
-    comboId: schema.number([
-      rules.exists({ table: 'combos', column: 'id' })
-    ]),
-    descripcion: schema.string({ trim: true }, [
-      rules.maxLength(255)
+    OperarioId: schema.number([
+      rules.exists({ table: 'operarios', column: 'id' }),
+      rules.unsigned(),
     ]),
 
   })
@@ -47,5 +47,12 @@ export default class ObraValidator {
    * }
    *
    */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'EspecialidadId.required': 'El id de la especialidad es obligatorio',
+    'EspecialidadId.exists': 'El id de la especialidad no existe',
+    'EspecialidadId.unsigned': 'El id de la especialidad debe ser un número positivo',
+    'OperarioId.required': 'El id del operario es obligatorio',
+    'OperarioId.exists': 'El id del operario no existe',
+    'OperarioId.unsigned': 'El id del operario debe ser un número positivo',
+  }
 }

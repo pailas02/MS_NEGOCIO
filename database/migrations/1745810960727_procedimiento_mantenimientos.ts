@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.integer('procedimiento_id').unsigned().references('id').inTable('procedimientos').onDelete('CASCADE')
       table.string('estado', 255).notNullable()
       table.string('observaciones', 255).notNullable()
+      table.date('fecha').notNullable()
       
 
       table.timestamp('created_at', { useTz: true })

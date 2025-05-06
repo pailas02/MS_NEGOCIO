@@ -24,6 +24,12 @@ export default class Combo extends BaseModel {
   })
   public servicio: BelongsTo<typeof Servicio>
 
+  @belongsTo(() => Servicio, {
+    foreignKey: 'servicioId', // Foreign key on the Combo table
+    localKey: 'id', // Local key on the Servicio table
+  })
+  public servicioId: BelongsTo<typeof Servicio>
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

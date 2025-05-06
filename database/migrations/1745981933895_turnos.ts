@@ -9,7 +9,7 @@ export default class extends BaseSchema {
 
       table.integer('maquina_id').unsigned().references('id').inTable('maquinas').onDelete('CASCADE')
       table.integer('operario_id').unsigned().references('id').inTable('operarios').onDelete('CASCADE')
-      table.boolean('estado').notNullable()
+      table.string('estado').notNullable()
       table.datetime('fecha_inicio', { useTz: true })
       table.datetime('fecha_fin', { useTz: true })
 

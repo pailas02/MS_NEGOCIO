@@ -18,7 +18,7 @@ export default class Novedad extends BaseModel {
   @column()
   public estado: string
   @column()
-  public fecha: string
+  public fecha: DateTime
   @column()
   public gravedad: string
 

@@ -1,7 +1,6 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-
-export default class ProcedimientoMantenimientoValidator {
+export default class TurnoValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -24,25 +23,28 @@ export default class ProcedimientoMantenimientoValidator {
    *    ```
    */
   public schema = schema.create({
-    mantenimientoId: schema.number([
-      rules.exists({ table: 'mantenimientos', column: 'id' }),
+    maquinaId: schema.number([
+      rules.exists({ table: 'maquinas', column: 'id' }),
       rules.unsigned(),
     ]),
-    procedimientoId: schema.number([
-      rules.exists({ table: 'procedimientos', column: 'id' }),
+    operarioId: schema.number([
+      rules.exists({ table: 'operarios', column: 'id' }),
       rules.unsigned(),
     ]),
-    estado: schema.string.optional({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(50),
-    ]),
-    observaciones: schema.string.optional({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(255),
-    ]),
-    fecha: schema.date.optional({ format: 'yyyy-MM-dd' }, [
+    estado: schema.enum(['activo', 'inactivo'] as const, [
       rules.required(),
     ]),
+    fechaInicio: schema.date({
+      format: 'yyyy-MM-dd',
+    }, [
+      rules.required(),
+    ]),
+    fechaFin: schema.date({
+      format: 'yyyy-MM-dd',
+    }, [
+      rules.required(),
+    ]),
+    
   })
 
   /**
@@ -57,15 +59,15 @@ export default class ProcedimientoMantenimientoValidator {
    *
    */
   public messages: CustomMessages = {
-    'mantenimientoId.required': 'El id del mantenimiento es obligatorio',
-    'procedimientoId.required': 'El id del procedimiento es obligatorio',
-    'estado.minLength': 'El estado debe tener al menos 3 caracteres',
-    'estado.maxLength': 'El estado no puede tener más de 50 caracteres',
-    'observaciones.minLength': 'Las observaciones deben tener al menos 3 caracteres',
-    'observaciones.maxLength': 'Las observaciones no pueden tener más de 255 caracteres',
-    'mantenimientoId.exists': 'El id del mantenimiento no existe',
-    'procedimientoId.exists': 'El id del procedimiento no existe',
-    'mantenimientoId.unsigned': 'El id del mantenimiento debe ser un número positivo',
-    'procedimientoId.unsigned': 'El id del procedimiento debe ser un número positivo',
-   }
+    'MaquinaId.required': 'El id de la máquina es obligatorio',
+    'MaquinaId.exists': 'El id de la máquina no existe',
+    'MaquinaId.unsigned': 'El id de la máquina debe ser un número positivo',
+    'operarioId.required': 'El id del operario es obligatorio',
+    'operarioId.exists': 'El id del operario no existe',
+    'operarioId.unsigned': 'El id del operario debe ser un número positivo',
+    'estado.required': 'El estado es obligatorio',
+    'estado.enum': 'El estado debe ser "activo" o "inactivo"',
+    'fechaInicio.required': 'La fecha de inicio es obligatoria',
+    'fechaFin.required': 'La fecha de fin es obligatoria',
+  }
 }

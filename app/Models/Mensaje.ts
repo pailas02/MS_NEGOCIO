@@ -9,6 +9,8 @@ export default class Mensaje extends BaseModel {
 
   @column()
   public mensaje: string
+  @column()
+  public fecha: DateTime
  
   @hasOne(() => Usuario, {
     foreignKey: 'idUsuario',

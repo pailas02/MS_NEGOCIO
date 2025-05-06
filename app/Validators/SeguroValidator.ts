@@ -1,7 +1,7 @@
 import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class ObraValidator {
+export default class SeguroValidator {
   constructor(protected ctx: HttpContextContract) {}
 
   /*
@@ -25,15 +25,18 @@ export default class ObraValidator {
    */
   public schema = schema.create({
     nombre: schema.string({ trim: true }, [
-      rules.maxLength(255)
+      rules.minLength(3),
+      rules.maxLength(50),
+      rules.regex(/^[a-zA-Z\s]+$/),
     ]),
-    comboId: schema.number([
-      rules.exists({ table: 'combos', column: 'id' })
+    descripcion: schema.string.optional({ trim: true }, [
+      rules.minLength(3),
+      rules.maxLength(255),
     ]),
-    descripcion: schema.string({ trim: true }, [
-      rules.maxLength(255)
+    costo: schema.number([
+      rules.unsigned(),
+      rules.range(0, 1000000),
     ]),
-
   })
 
   /**
@@ -47,5 +50,15 @@ export default class ObraValidator {
    * }
    *
    */
-  public messages: CustomMessages = {}
+  public messages: CustomMessages = {
+    'nombre.required': 'El nombre es obligatorio',
+    'nombre.minLength': 'El nombre debe tener al menos 3 caracteres',
+    'nombre.maxLength': 'El nombre no puede tener más de 50 caracteres',
+    'nombre.regex': 'El nombre solo puede contener letras y espacios',
+    'descripcion.minLength': 'La descripción debe tener al menos 3 caracteres',
+    'descripcion.maxLength': 'La descripción no puede tener más de 255 caracteres',
+    'costo.required': 'El costo es obligatorio',
+    'costo.unsigned': 'El costo debe ser un número positivo',
+    'costo.range': 'El costo debe estar entre 0 y 1,000,000',
+  }
 }

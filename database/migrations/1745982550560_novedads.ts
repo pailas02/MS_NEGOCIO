@@ -12,7 +12,7 @@ export default class extends BaseSchema {
       table.string('descripcion', 255).notNullable()
       table.string('evidencia', 255).notNullable()
       table.string('estado', 50).notNullable()
-      table.string('fecha', 50).notNullable()
+      table.date('fecha').notNullable()
       table.string('gravedad', 50).notNullable()         
 
       table.timestamp('created_at', { useTz: true })
