@@ -14,8 +14,9 @@ export default class ProcedimientoMantenimiento extends BaseModel {
   public estado: string
   @column()
   public observaciones: string
-  @column()
-  public fecha: DateTime
+  @column.date()
+ public fecha: DateTime
+
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

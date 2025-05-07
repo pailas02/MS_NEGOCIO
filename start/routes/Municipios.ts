@@ -1,7 +1,7 @@
 import Route from '@ioc:Adonis/Core/Route'
 
 Route.group(() => {
-    Route.get('/municipios', 'MunicipiosController.index')
+Route.get('/municipios', 'MunicipiosController.index')
 Route.get('/municipios/:id', 'MunicipiosController.show')
 Route.post('/municipios', 'MunicipiosController.create')
 Route.put('/municipios/:id', 'MunicipiosController.update')

@@ -14,10 +14,7 @@ export default class ProcedimientoValidator {
     descripcion: schema.string.optional({ trim: true }, [
       rules.minLength(3),
       rules.maxLength(255),
-    ]),
-    fechaInicio: schema.date(),
-    fechaFin: schema.date(),
-
+    ])
   })
 
 
@@ -28,9 +25,6 @@ export default class ProcedimientoValidator {
     'nombre.regex': 'El nombre solo puede contener letras y espacios',
     'descripcion.minLength': 'La descripción debe tener al menos 3 caracteres',
     'descripcion.maxLength': 'La descripción no puede tener más de 255 caracteres',
-    'fechaInicio.required': 'La fecha de inicio es obligatoria',
-    'fechaFin.required': 'La fecha de fin es obligatoria',
-    'fechaInicio.date': 'La fecha de inicio debe ser una fecha válida',
-    'fechaFin.date': 'La fecha de fin debe ser una fecha válida',
+    'descripcion.required': 'La descripción es obligatoria'
   }
 }

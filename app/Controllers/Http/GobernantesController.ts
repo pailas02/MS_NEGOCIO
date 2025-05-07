@@ -5,24 +5,13 @@ import GobernanteDepartamento from 'App/Models/GobernanteDepartamento'
 import { DateTime } from 'luxon'
 import axios from 'axios'
 import Env from '@ioc:Adonis/Core/Env'
+import CreateGobernanteValidator from 'App/Validators/GobernanteValidator'
 
 export default class GobernantesController {
-  /**
-   * POST /gobernantes
-   * Crea un nuevo gobernante y lo asigna a un territorio (municipio o departamento).
-   * Se asegura que no tenga asignaciones activas duplicadas (XOR entre municipio y departamento).
-   */
-  public async create({ request, response }: HttpContextContract) {
-    // Extrae los campos del cuerpo de la petición
-    const { user_id, periodoInicio, periodoFin, territorio, tipo } = request.only([
-      'user_id',
-      'periodoInicio',
-      'periodoFin',
-      'territorio',
-      'tipo',
-    ])
+  public async store({ request, response }: HttpContextContract) {
+    const payload = await request.validate(CreateGobernanteValidator)
+    const { user_id, periodoInicio, periodoFin, tipo, territorio } = payload
 
-    // Verifica que el usuario exista en el microservicio de seguridad
     try {
       await axios.get(`${Env.get('MS_SECURITY')}/api/users/${user_id}`, {
         headers: { Authorization: request.header('Authorization') },
@@ -34,46 +23,38 @@ export default class GobernantesController {
       })
     }
 
-    // Crea el registro del gobernante
-    const gobernante = await Gobernante.create({ user_id, periodoInicio, periodoFin })
+    const gobernante = await Gobernante.create({ user_id, periodoInicio, periodoFin, tipo })
 
-    // Asignación a departamento
     if (tipo === 'departamento') {
-      // Evita asignación si ya tiene municipios activos
-      const municipiosActivos = await GobernanteMunicipio.query()
-        .where('gobernante_id', gobernante.id)
-        .where('fecha_fin', '>=', DateTime.now().toSQL())
+      const tieneMunicipios = await GobernanteMunicipio.query()
+        .where('gobernanteId', gobernante.id)
+        .where('fechaFin', '>=', DateTime.now().toSQL())
         .first()
 
-      if (municipiosActivos) {
+      if (tieneMunicipios) {
         return response.badRequest({
-          message: 'El gobernante ya está asignado a un municipio. No puede ser asignado a un departamento simultáneamente.',
+          message: 'Ya tiene asignado un municipio activo. No puede ser asignado a un departamento.',
         })
       }
 
-      // Crea la relación con el departamento
       await GobernanteDepartamento.create({
         gobernanteId: gobernante.id,
         departamentoId: territorio.departamento_id,
         fechaInicio: periodoInicio,
         fechaFin: periodoFin,
       })
-
-    // Asignación a municipio
     } else if (tipo === 'municipio') {
-      // Evita asignación si ya tiene departamentos activos
-      const departamentosActivos = await GobernanteDepartamento.query()
-        .where('gobernante_id', gobernante.id)
-        .where('fecha_fin', '>=', DateTime.now().toSQL())
+      const tieneDepartamentos = await GobernanteDepartamento.query()
+        .where('gobernanteId', gobernante.id)
+        .where('fechaFin', '>=', DateTime.now().toSQL())
         .first()
 
-      if (departamentosActivos) {
+      if (tieneDepartamentos) {
         return response.badRequest({
-          message: 'El gobernante ya está asignado a un departamento. No puede ser asignado a un municipio simultáneamente.',
+          message: 'Ya tiene asignado un departamento activo. No puede ser asignado a un municipio.',
         })
       }
 
-      // Crea la relación con el municipio
       await GobernanteMunicipio.create({
         gobernanteId: gobernante.id,
         municipioId: territorio.municipio_id,
@@ -84,75 +65,64 @@ export default class GobernantesController {
       return response.badRequest({ message: 'Tipo de territorio inválido' })
     }
 
-    return response.status(201).send({ message: 'Gobernante creado y territorio asignado' })
+    return response.created({ message: 'Gobernante creado y asignado correctamente' })
   }
 
-  /**
-   * GET /gobernantes o /gobernantes/:id
-   * Lista uno o todos los gobernantes con su información de usuario y relaciones activas.
-   */
-  public async find({ params, response }: HttpContextContract) {
-    try {
-      if (params.id) {
-        // Obtiene gobernante específico
-        const gobernante = await Gobernante.query()
-          .where('id', params.id)
-          .preload('departamentos', (query) => {
-            query.pivotColumns(['fecha_inicio', 'fecha_fin'])
-          })
-          .preload('municipios', (query) => {
-            query.pivotColumns(['fecha_inicio', 'fecha_fin'])
-          })
-          .firstOrFail()
+  public async index({ response }: HttpContextContract) {
+    const gobernantes = await Gobernante.query()
+      .preload('departamentos', (q) => q.pivotColumns(['fecha_inicio', 'fecha_fin']))
+      .preload('municipios', (q) => q.pivotColumns(['fecha_inicio', 'fecha_fin']))
 
-        // Consulta datos del usuario desde ms-security
-        const userResponse = await axios.get(`${Env.get('MS_SECURITY')}/api/users/${gobernante.user_id}`)
-        const { _id, name, email } = userResponse.data
+    const gobernantesConUsuario = await Promise.all(
+      gobernantes.map(async (g) => {
+        let user = null
+        try {
+          const res = await axios.get(`${Env.get('MS_SECURITY')}/api/users/${g.user_id}`)
+          const { _id, name, email } = res.data
+          user = { id: _id, name, email }
+        } catch {
+          user = { id: g.user_id, name: 'Usuario no disponible', email: '' }
+        }
 
-        return response.ok({
-          id: gobernante.id,
-          user: { id: _id, name, email },
-          periodo_init: gobernante.periodoInicio,
-          periodo_end: gobernante.periodoFin,
-          departamentos: gobernante.departamentos,
-          municipios: gobernante.municipios,
-        })
-
-      } else {
-        // Obtiene todos los gobernantes
-        const gobernantes = await Gobernante.query()
-          .preload('departamentos', (query) => {
-            query.pivotColumns(['fecha_inicio', 'fecha_fin'])
-          })
-          .preload('municipios', (query) => {
-            query.pivotColumns(['fecha_inicio', 'fecha_fin'])
-          })
-
-        // Mapea y agrega datos de usuario a cada gobernante
-        const gobernantesWithUserData = await Promise.all(
-          gobernantes.map(async (gobernante) => {
-            const userResponse = await axios.get(`${Env.get('MS_SECURITY')}/api/users/${gobernante.user_id}`)
-            const { _id, name, email } = userResponse.data
-
-            return {
-              id: gobernante.id,
-              user: { id: _id, name, email },
-              periodo_init: gobernante.periodoInicio,
-              periodo_end: gobernante.periodoFin,
-              departamentos: gobernante.departamentos,
-              municipios: gobernante.municipios,
-            }
-          })
-        )
-
-        return response.ok(gobernantesWithUserData)
-      }
-    } catch (error) {
-      console.error('Error al listar gobernantes:', error.message)
-      return response.internalServerError({
-        message: 'Error al listar gobernantes.',
-        error: error.message,
+        return {
+          id: g.id,
+          user,
+          periodo_inicio: g.periodoInicio,
+          periodo_fin: g.periodoFin,
+          tipo: g.tipo,
+          departamentos: g.departamentos,
+          municipios: g.municipios,
+        }
       })
+    )
+
+    return response.ok(gobernantesConUsuario)
+  }
+
+  public async show({ params, response }: HttpContextContract) {
+    const gobernante = await Gobernante.query()
+      .where('id', params.id)
+      .preload('departamentos', (q) => q.pivotColumns(['fecha_inicio', 'fecha_fin']))
+      .preload('municipios', (q) => q.pivotColumns(['fecha_inicio', 'fecha_fin']))
+      .firstOrFail()
+
+    let user = null
+    try {
+      const res = await axios.get(`${Env.get('MS_SECURITY')}/api/users/${gobernante.user_id}`)
+      const { _id, name, email } = res.data
+      user = { id: _id, name, email }
+    } catch {
+      user = { id: gobernante.user_id, name: 'Usuario no disponible', email: '' }
     }
+
+    return response.ok({
+      id: gobernante.id,
+      user,
+      periodo_inicio: gobernante.periodoInicio,
+      periodo_fin: gobernante.periodoFin,
+      tipo: gobernante.tipo,
+      departamentos: gobernante.departamentos,
+      municipios: gobernante.municipios,
+    })
   }
 }

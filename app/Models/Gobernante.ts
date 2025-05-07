@@ -8,12 +8,10 @@ export default class Gobernante extends BaseModel {
   public id: number
 
   @column()
-  public user_id: number
+  public user_id: string
 
   @column()
   public periodoInicio: string
-
-  
 
   @column()
   public periodoFin: string

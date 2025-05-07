@@ -24,15 +24,6 @@ export default class MaquinaValidator {
    *    ```
    */
   public schema = schema.create({
-    nombre: schema.string({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(50),
-      rules.regex(/^[a-zA-Z\s]+$/),
-    ]),
-    tipo: schema.string({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(50),
-    ]),
     marca: schema.string.optional({ trim: true }, [
       rules.minLength(3),
       rules.maxLength(50),
@@ -41,6 +32,11 @@ export default class MaquinaValidator {
       rules.minLength(3),
       rules.maxLength(50),
     ]),
+    estado: schema.string.optional({ trim: true }, [
+      rules.minLength(3),
+      rules.maxLength(50),
+    ]),
+    
   })
 
   /**

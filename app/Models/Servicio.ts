@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Combo from './Combo'
 import Cuota from './Cuota'
 import Evidancia from './Evidancia'
@@ -10,34 +10,44 @@ export default class Servicio extends BaseModel {
 
   @column()
   public costo: number
+
   @column()
   public prioridad: string
+
   @column()
   public tipoServicio: string
-  @column()
+
+  @column.dateTime()
   public fechaInicio: DateTime
-  @column()
+
+  @column.dateTime()
   public fechaFin: DateTime
+
   @column()
-  public estado: String
+  public estado: string
+
   @column()
   public ubicacion: string
+
   @column()
   public historico: string
 
-  @hasOne(() => Combo, {
-    foreignKey: 'comboId', 
-  })
-  public combo: HasOne<typeof Combo>
+  @column()
+  public comboId: number
 
-  @hasOne(() => Cuota, {
-    foreignKey: 'cuotaId', 
-  })
-  public cuota: HasOne<typeof Cuota>
+  @column()
+  public cuotaId: number
 
-  @belongsTo(() => Evidancia, {
-    foreignKey: 'evidenciaId',
-  })
+  @column()
+  public evidenciaId: number
+
+  @belongsTo(() => Combo)
+  public combo: BelongsTo<typeof Combo>
+
+  @belongsTo(() => Cuota)
+  public cuota: BelongsTo<typeof Cuota>
+
+  @belongsTo(() => Evidancia)
   public evidencia: BelongsTo<typeof Evidancia>
 
   @column.dateTime({ autoCreate: true })

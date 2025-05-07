@@ -47,22 +47,22 @@ export default class ServicioValidator {
    *
    */
   public messages: CustomMessages = {
-    'costo.required': 'El costo es obligatorio',
-    'costo.number': 'El costo debe ser un número',
+    'costo.required': 'El costo es requerido',
     'costo.range': 'El costo debe estar entre 0 y 99999999',
-    'prioridad.required': 'La prioridad es obligatoria',
-    'prioridad.string': 'La prioridad debe ser una cadena de texto',
+    'prioridad.required': 'La prioridad es requerida',
     'prioridad.maxLength': 'La prioridad no puede exceder los 255 caracteres',
-    'tipoServicio.required': 'El tipo de servicio es obligatorio',
-    'tipoServicio.string': 'El tipo de servicio debe ser una cadena de texto',
+    'tipoServicio.required': 'El tipo de servicio es requerido',
     'tipoServicio.maxLength': 'El tipo de servicio no puede exceder los 255 caracteres',
-    'fechaInicio.required': 'La fecha de inicio es obligatoria',
-    'fechaInicio.date': 'La fecha de inicio debe ser una fecha válida',
-    'fechaInicio.before': 'La fecha de inicio debe ser anterior a la fecha actual',
-    'fechaFin.required': 'La fecha de fin es obligatoria',
-    'fechaFin.date': 'La fecha de fin debe ser una fecha válida',
-    'fechaFin.afterField': 'La fecha  de fin debe ser posterior a la fecha de inicio',
-    'estado.required': 'El estado es obligatorio',
-    'estado.string': 'El estado debe ser una cadena de texto',
+    'fechaInicio.required': 'La fecha de inicio es requerida',
+    'fechaInicio.date.format': 'La fecha de inicio debe tener el formato yyyy-MM-dd HH:mm:ss',
+    'fechaFin.required': 'La fecha de fin es requerida',
+    'fechaFin.date.format': 'La fecha de fin debe tener el formato yyyy-MM-dd HH:mm:ss',
+    'fechaFin.afterField': 'La fecha de fin debe ser posterior a la fecha de inicio',
+    'estado.required': 'El estado es requerido',
+    'estado.maxLength': 'El estado no puede exceder los 255 caracteres',
+    'ubicacion.required': 'La ubicación es requerida',
+    'ubicacion.maxLength': 'La ubicación no puede exceder los 255 caracteres',
+    // Mensaje para el campo historico
+    // Puedes agregar más mensajes personalizados aquí
   }
 }

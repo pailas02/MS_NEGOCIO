@@ -9,7 +9,7 @@ export default class extends BaseSchema {
 
       table.string('nombre', 50).notNullable()
       table
-        .integer('departamentoId') // ← corregido
+        .integer('departamento_Id') // ← corregido
         .unsigned()
         .references('id')
         .inTable('departamentos')

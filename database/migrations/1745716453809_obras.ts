@@ -9,13 +9,6 @@ export default class extends BaseSchema {
 
       table.string('nombre').notNullable()
       table.string('descripcion').notNullable()
-      table
-        .integer('municipioId')
-        .unsigned()
-        .notNullable()
-        .references('id')
-        .inTable('municipios')
-        .onDelete('CASCADE')
 
       table
         .integer('combo_id')

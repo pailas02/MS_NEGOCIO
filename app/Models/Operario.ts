@@ -8,10 +8,7 @@ export default class Operario extends BaseModel {
   public id: number
 
   @column()
-  public email: string
-
-  @column()
-  public nombre: string
+  public user_id: string
 
   @column()
   public experiencia: String

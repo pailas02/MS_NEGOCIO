@@ -1,18 +1,9 @@
-import { DateTime } from 'luxon'
-import {
-  BaseModel,
-  BelongsTo,
-  belongsTo,
-  column,
-  ManyToMany,
-  manyToMany,
-} from '@ioc:Adonis/Lucid/Orm'
-import Gobernante from './Gobernante'
+import { BaseModel, column, manyToMany, ManyToMany, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 import Departamento from './Departamento'
+import Obra from './Obra'
+import { DateTime } from 'luxon'
 
 export default class Municipio extends BaseModel {
-  public static table = 'municipios' // asegúrate que coincide con la migración
-
   @column({ isPrimary: true })
   public id: number
 
@@ -22,17 +13,15 @@ export default class Municipio extends BaseModel {
   @column()
   public departamentoId: number
 
-  @belongsTo(() => Departamento, {
-    foreignKey: 'departamentoId',
-  })
+  @belongsTo(() => Departamento)
   public departamento: BelongsTo<typeof Departamento>
 
-  @manyToMany(() => Gobernante, {
-    pivotTable: 'gobernante_municipio',
+  @manyToMany(() => Obra, {
+    pivotTable: 'obra_municipio',
     pivotForeignKey: 'municipio_id',
-    pivotRelatedForeignKey: 'gobernante_id',
+    pivotRelatedForeignKey: 'obra_id',
   })
-  public gobernantes: ManyToMany<typeof Gobernante>
+  public obras: ManyToMany<typeof Obra>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
