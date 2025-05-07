@@ -3,7 +3,7 @@ import { BaseModel, column, HasMany, hasMany } from '@ioc:Adonis/Lucid/Orm'
 import Gobernante from './Gobernante'
 import Municipio from './Municipio'
 
-export default class Departameto extends BaseModel {
+export default class Departamento extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 

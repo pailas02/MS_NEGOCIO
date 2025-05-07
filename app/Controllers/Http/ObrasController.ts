@@ -8,19 +8,17 @@ export default class ObrasController {
     // POST /obras 
     public async create({ request }: HttpContextContract) {
         const payload = await request.validate(ObraValidator);
+      
         const theObra: Obra = await Obra.create({
-            nombre: payload.nombre,
-            descripcion : payload.descripcion,
-            comboId : payload.comboId
+          nombre: payload.nombre,
+          descripcion: payload.descripcion,
+          comboId: payload.comboId,
         });
-
-        if (request.input('municipios')) {
-            await theObra.related('municipios').sync(request.input('municipios'))
-        }
-
-        await theObra.load('municipios')
+      
+        // ❌ no relaciona municipios aquí
         return theObra;
-    }
+      }
+      
 
     // Listar Obras or a specific Obra by ID
     // GET /obras

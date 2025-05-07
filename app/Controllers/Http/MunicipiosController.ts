@@ -2,81 +2,88 @@ import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 import Municipio from 'App/Models/Municipio'
 import Departamento from 'App/Models/Departamento'
 import axios from 'axios'
-import Env from '@ioc:Adonis/Core/Env'
 
 export default class MunicipiosController {
-  /**
-   * GET /municipios
-   * Lista los municipios desde la API externa, opcionalmente filtrados por departamento
-   */
-  public async index({ request, response }: HttpContextContract) {
-    try {
-      const apiUrl = Env.get('COLOMBIA_API_URL')
-      const departamento = request.input('departamento')
+  // GET /municipios
+  public async index({ response }: HttpContextContract) {
+    const municipios = await Municipio.query().preload('departamento')
 
-      // Arma el endpoint con o sin filtro de departamento
-      const endpoint = departamento
-        ? `${apiUrl}/municipios?departamento=${departamento}`
-        : `${apiUrl}/municipios`
-
-      // Llama a la API externa
-      const { data: municipios } = await axios.get(endpoint)
-
-      if (!municipios || municipios.length === 0) {
-        return response.notFound({ message: 'No se encontraron municipios en la API.' })
-      }
-
-      return response.ok({ data: municipios })
-    } catch (error) {
-      console.error('Error al obtener municipios:', error.message)
-      return response.internalServerError({
-        message: 'Error al obtener municipios desde la API de Colombia.',
-        error: error.message,
-      })
+    if (!municipios.length) {
+      return response.notFound({ message: 'No hay municipios registrados.' })
     }
+
+    return response.ok({ data: municipios })
   }
 
-  /**
-   * POST /municipios/sincronizar
-   * Sincroniza los municipios desde la API a la base de datos local,
-   * validando que el departamento correspondiente exista
-   */
-  public async sincronizar({ request, response }: HttpContextContract) {
+  // GET /municipios/:id
+  public async show({ params, response }: HttpContextContract) {
+    const municipio = await Municipio.find(params.id)
+    if (!municipio) {
+      return response.notFound({ message: 'Municipio no encontrado.' })
+    }
+    return response.ok(municipio)
+  }
+
+  // POST /municipios
+  public async create({ request, response }: HttpContextContract) {
+    const data = request.only(['nombre', 'departamentoId'])
+    const municipio = await Municipio.create(data)
+    return response.created(municipio)
+  }
+
+  // PUT /municipios/:id
+  public async update({ params, request, response }: HttpContextContract) {
+    const municipio = await Municipio.find(params.id)
+    if (!municipio) {
+      return response.notFound({ message: 'Municipio no encontrado.' })
+    }
+
+    const data = request.only(['nombre', 'departamentoId'])
+    municipio.merge(data)
+    await municipio.save()
+
+    return response.ok(municipio)
+  }
+
+  // DELETE /municipios/:id
+  public async delete({ params, response }: HttpContextContract) {
+    const municipio = await Municipio.find(params.id)
+    if (!municipio) {
+      return response.notFound({ message: 'Municipio no encontrado.' })
+    }
+
+    await municipio.delete()
+    return response.noContent()
+  }
+
+  // POST /municipios/sincronizar-datosgov
+  public async sincronizarDesdeDatosGov({ response }: HttpContextContract) {
     try {
-      const apiUrl = Env.get('COLOMBIA_API_URL')
-      const departamentoNombre = request.input('departamento')
+      const { data: municipios } = await axios.get('https://www.datos.gov.co/resource/xdk5-pm3f.json')
 
-      // Arma el endpoint con o sin filtro de departamento
-      const endpoint = departamentoNombre
-        ? `${apiUrl}/municipios?departamento=${departamentoNombre}`
-        : `${apiUrl}/municipios`
+      for (const item of municipios) {
+        const nombreDepartamento = item.departamento?.trim()
+        const nombreMunicipio = item.municipio?.trim()
 
-      const { data: municipios } = await axios.get(endpoint)
+        if (!nombreDepartamento || !nombreMunicipio) continue
 
-      for (const municipio of municipios) {
-        // Buscar el departamento por ID para asegurar integridad referencial
-        const departamento = await Departamento.findBy('id', municipio.departamento_id)
-
+        const departamento = await Departamento.findBy('nombre', nombreDepartamento)
         if (!departamento) {
-          console.warn(`Departamento no encontrado para el municipio: ${municipio.nombre}`)
-          continue // Omitir si el departamento no existe
+          console.warn(`❌ Departamento no encontrado: ${nombreDepartamento}`)
+          continue
         }
 
-        // Insertar o actualizar municipio en la base de datos
         await Municipio.updateOrCreate(
-          { id: municipio.id },
-          {
-            nombre: municipio.nombre,
-            departamentoId: departamento.id,
-          }
+          { nombre: nombreMunicipio, departamentoId: departamento.id },
+          {}
         )
       }
 
-      return response.ok({ message: 'Municipios sincronizados correctamente.' })
+      return response.ok({ message: 'Municipios sincronizados correctamente desde datos.gov.co' })
     } catch (error) {
-      console.error('Error al sincronizar municipios:', error.message)
+      console.error('❌ Error al sincronizar municipios:', error.message)
       return response.internalServerError({
-        message: 'Error al sincronizar municipios desde la API de Colombia.',
+        message: 'Error al sincronizar municipios.',
         error: error.message,
       })
     }

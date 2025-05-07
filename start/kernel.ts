@@ -3,9 +3,8 @@
 | Application middleware
 |--------------------------------------------------------------------------
 |
-| This file is used to define middleware for HTTP requests. You can register
-| middleware as a `closure` or an IoC container binding. The bindings are
-| preferred, since they keep this file clean.
+| Este archivo define los middleware globales y nombrados de la app.
+| Usa `() => import(...)` para mantener carga diferida y ordenada.
 |
 */
 
@@ -13,11 +12,10 @@ import Server from '@ioc:Adonis/Core/Server'
 
 /*
 |--------------------------------------------------------------------------
-| Global middleware
+| Middleware globales
 |--------------------------------------------------------------------------
 |
-| An array of global middleware, that will be executed in the order they
-| are defined for every HTTP requests.
+| Se ejecutan en todas las rutas.
 |
 */
 Server.middleware.register([
@@ -26,19 +24,12 @@ Server.middleware.register([
 
 /*
 |--------------------------------------------------------------------------
-| Named middleware
+| Middleware nombrados
 |--------------------------------------------------------------------------
 |
-| Named middleware are defined as key-value pair. The value is the namespace
-| or middleware function and key is the alias. Later you can use these
-| alias on individual routes. For example:
-|
-| { auth: () => import('App/Middleware/Auth') }
-|
-| and then use it as follows
-|
-| Route.get('dashboard', 'UserController.dashboard').middleware('auth')
+| Se pueden aplicar a rutas específicas con `.middleware('alias')`
 |
 */
 Server.middleware.registerNamed({
+  MsSecMid: () => import('App/Middleware/MsSecMid'),
 })
