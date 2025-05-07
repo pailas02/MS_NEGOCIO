@@ -1,85 +1,48 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, rules } from '@ioc:Adonis/Core/Validator'
 import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import Turno from 'App/Models/Turno'
 
 export default class NovedadValidator {
   constructor(protected ctx: HttpContextContract) {}
 
-  /*
-   * Define schema to validate the "shape", "type", "formatting" and "integrity" of data.
-   *
-   * For example:
-   * 1. The username must be of data type string. But then also, it should
-   *    not contain special characters or numbers.
-   *    ```
-   *     schema.string([ rules.alpha() ])
-   *    ```
-   *
-   * 2. The email must be of data type string, formatted as a valid
-   *    email. But also, not used by any other user.
-   *    ```
-   *     schema.string([
-   *       rules.email(),
-   *       rules.unique({ table: 'users', column: 'email' }),
-   *     ])
-   *    ```
-   */
   public schema = schema.create({
     turnoId: schema.number([
       rules.exists({ table: 'turnos', column: 'id' }),
-      rules.unsigned(),
     ]),
-    tipo: schema.enum(['mantenimiento', 'reparacion'] as const, [
-      rules.required(),
+
+    tipo: schema.enum(['mantenimiento', 'reparacion'] as const),
+
+    descripcion: schema.string({}, [
+      rules.regex(/^[a-zA-Z0-9\sáéíóúÁÉÍÓÚ.,-]+$/),
     ]),
-    descripcion: schema.string({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(255),
-      rules.regex(/^[a-zA-Z0-9\s]+$/),
+
+    evidencia: schema.string.optional({}, [
+      rules.regex(/^[\w\-./]+$/),
     ]),
-    evidencia: schema.string.optional({ trim: true }, [
-      rules.minLength(3),
-      rules.maxLength(255),
-      rules.regex(/^[a-zA-Z0-9\s]+$/),
-    ]),
-    estado: schema.enum(['pendiente', 'en_progreso', 'completada'] as const, [
-      rules.required(),
-    ]),
-    fecha: schema.date.optional( { format: 'yyyy-MM-dd' }, [
-      rules.required(),
-    ]),
-    gravedad: schema.enum(['baja', 'media', 'alta'] as const, [
-      rules.required(),
-    ]),
-    Turno: schema.object().members({
-      id: schema.number([
-        rules.exists({ table: 'turnos', column: 'id' }),
-        rules.unsigned(),
-      ]),
-  })
+
+    estado: schema.string(),
+
+    fecha: schema.date({
+      format: 'yyyy-MM-dd',
+    }),
+
+    gravedad: schema.enum(['baja', 'media', 'alta'] as const),
   })
 
-  /**
-   * Custom messages for validation failures. You can make use of dot notation `(.)`
-   * for targeting nested fields and array expressions `(*)` for targeting all
-   * children of an array. For example:
-   *
-   * {
-   *   'profile.username.required': 'Username is required',
-   *   'scores.*.number': 'Define scores as valid numbers'
-   * }
-   *
-   */
-  public messages: CustomMessages = {
+  public messages = {
     'turnoId.required': 'El id del turno es obligatorio',
-    'turnoId.exists': 'El id del turno no existe',
-    'turnoId.unsigned': 'El id del turno debe ser un número positivo',
-    'tipo.required': 'El tipo es obligatorio',
+    'turnoId.exists': 'El turno no existe',
+
     'tipo.enum': 'El tipo debe ser "mantenimiento" o "reparacion"',
-    'descripcion.required': 'La descripción es obligatoria',
-    'descripcion.minLength': 'La descripción debe tener al menos 3 caracteres',
-    'descripcion.maxLength': 'La descripción no puede tener más de 255 caracteres',
-    'descripcion.regex': 'La descripción solo puede contener letras, números y espacios,',
-    'evidencia.minLength': 'La evidencia debe tener al menos 3 caracteres',
-  } 
+
+    'descripcion.regex': 'La descripción solo puede contener letras, números y espacios',
+
+    'evidencia.regex': 'La evidencia debe ser una ruta o nombre de archivo válido',
+
+    'estado.required': 'El estado es obligatorio',
+
+    'fecha.required': 'La fecha es obligatoria',
+    'fecha.date': 'La fecha debe tener formato YYYY-MM-DD',
+
+    'gravedad.enum': 'La gravedad debe ser "baja", "media" o "alta"',
+  }
 }

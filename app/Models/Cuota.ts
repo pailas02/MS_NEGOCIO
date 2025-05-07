@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, HasOne, hasOne } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, belongsTo, BelongsTo } from '@ioc:Adonis/Lucid/Orm'
 import Servicio from './Servicio'
 import Factura from './Factura'
 
@@ -8,26 +8,24 @@ export default class Cuota extends BaseModel {
   public id: number
 
   @column()
-  public id_servicio: number
-  @column()
   public monto: number
+
   @column()
   public estado: string
+  @column()
+public servicio_id: number
+
+@belongsTo(() => Servicio, {
+  foreignKey: 'servicio_id',
+})
+public servicio: BelongsTo<typeof Servicio>
+
   
-  @hasOne(() => Servicio, {
-    foreignKey: 'servicioId',
-  })
-  public servicio: HasOne<typeof Servicio>
 
-  @hasOne(() => Factura, {
-    foreignKey: 'cuotaId',
+  @belongsTo(() => Factura, {
+    foreignKey: 'cuota_id',
   })
-  public factura: HasOne<typeof Factura>
-
-  @belongsTo(() => Servicio, {
-    foreignKey: 'id_servicio',
-  })
-  public servicioId: BelongsTo<typeof Servicio>
+  public factura: BelongsTo<typeof Factura>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

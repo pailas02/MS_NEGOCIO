@@ -25,7 +25,7 @@ export default class EspecialidadOperariValidator {
    */
   public schema = schema.create({
     EspecialidadId : schema.number([
-      rules.exists({ table: 'especialidades', column: 'id' }),
+      rules.exists({ table: 'especialidads', column: 'id' }),
       rules.unsigned(),
     ]),
     OperarioId: schema.number([

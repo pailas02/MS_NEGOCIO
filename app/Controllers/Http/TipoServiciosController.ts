@@ -1,49 +1,37 @@
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
-import TipoServicio from 'App/Models/TipoServicio';
-import TipoServicioValidator from 'App/Validators/TipoServicioValidator';
+import { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import TipoServicio from 'App/Models/TipoServicio'
 
 export default class TipoServiciosController {
-    // Crear un nuevo TipoServicio
-    //  GET /TipoServicios
-  public async index({ request }: HttpContextContract) {
-    const data = request.all()
-    if ("page" in data && "per_page" in data) {
-      const page = request.input('page', 1);
-      const perPage = request.input("per_page", 20);
-      return await TipoServicio.query().paginate(page, perPage)
-    } else {
-      return await TipoServicio.query()
+  public async find({ params, response }: HttpContextContract) {
+    if (params.id) {
+      const tipo = await TipoServicio.find(params.id)
+      return tipo ? response.ok(tipo) : response.notFound({ message: 'No encontrado' })
     }
+    const tipos = await TipoServicio.all()
+    return response.ok(tipos)
   }
 
-  // Listar TipoServicio by ID
-    // GET /TipoServicios/:id
-  public async show({ params }: HttpContextContract) {
-    return await TipoServicio.findOrFail(params.id)
+  public async create({ request, response }: HttpContextContract) {
+    const data = request.only(['nombre', 'descripcion']) // ajusta según campos reales
+    const tipo = await TipoServicio.create(data)
+    return response.created(tipo)
   }
 
-  public async store({ request }: HttpContextContract) {
-    const payload = await request.validate(TipoServicioValidator);
-    const theTipoServicio: TipoServicio = await TipoServicio.create(payload);
-    return theTipoServicio;
+  public async update({ params, request, response }: HttpContextContract) {
+    const tipo = await TipoServicio.find(params.id)
+    if (!tipo) return response.notFound({ message: 'No encontrado' })
+
+    const data = request.only(['nombre', 'descripcion'])
+    tipo.merge(data)
+    await tipo.save()
+    return response.ok(tipo)
   }
 
-  // Actualizar an TipoServicio
-    // PUT /TipoServicios/:id
-  public async update({ params, request }: HttpContextContract) {
-    const theTipoServicio: TipoServicio = await TipoServicio.findOrFail(params.id);
-    const payload = await request.validate(TipoServicioValidator);
-    theTipoServicio.nombre = payload.nombre;
-    theTipoServicio.descripcion = payload.descripcion ?? theTipoServicio.descripcion;
-    return await theTipoServicio.save();
-  }
+  public async delete({ params, response }: HttpContextContract) {
+    const tipo = await TipoServicio.find(params.id)
+    if (!tipo) return response.notFound({ message: 'No encontrado' })
 
-  // Eliminar an TipoServicio
-    // DELETE /TipoServicios/:id
-  public async destroy({ params, response }: HttpContextContract) {
-    const theTipoServicio: TipoServicio = await TipoServicio.findOrFail(params.id);
-    await theTipoServicio.delete();
-    response.status(204);
-    return;
+    await tipo.delete()
+    return response.ok({ message: 'Eliminado correctamente' })
   }
 }

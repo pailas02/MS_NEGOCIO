@@ -11,6 +11,7 @@ export default class extends BaseSchema {
       table.string('estado', 50).notNullable()
       table.integer('servicio_id').unsigned().references('id').inTable('servicios').onDelete('CASCADE')
       
+      
       table.timestamp('created_at', { useTz: true })
       table.timestamp('updated_at', { useTz: true })
     })
