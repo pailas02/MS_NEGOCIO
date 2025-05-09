@@ -5,6 +5,12 @@ export default class MaquinaCombo extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
+  @column()
+  public idMaquina: number
+
+  @column()
+  public idCombo: number
+
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime
 

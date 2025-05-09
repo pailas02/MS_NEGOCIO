@@ -11,6 +11,7 @@ interface User {
 }
 
 export default class OperariosController {
+  // Listar operarios (todos o paginados)
   public async index({ request }: HttpContextContract) {
     const page = request.input('page')
     const perPage = request.input('per_page')
@@ -22,16 +23,13 @@ export default class OperariosController {
     return Operario.all()
   }
 
+  // Mostrar un operario + info de usuario remoto
   public async show({ params, request, response }: HttpContextContract) {
     const operario = await Operario.findOrFail(params.id)
     const token = request.header('Authorization')
 
     try {
-      const { data: user } = await axios.get<User>(
-        `${Env.get('MS_SECURITY')}/api/users/${operario.user_id}`,
-        { headers: { Authorization: token } }
-      )
-
+      const user = await this.getUser(operario.user_id, token)
       return {
         id: operario.id,
         name: user.name,
@@ -46,24 +44,14 @@ export default class OperariosController {
     }
   }
 
+  // Crear operario
   public async store({ request, response }: HttpContextContract) {
     try {
       const payload = await request.validate(OperarioValidator)
       const { user_id, experiencia } = payload
       const token = request.header('Authorization')
 
-      // Verificar existencia del usuario en ms-security
-      const { data: user } = await axios.get<User>(
-        `${Env.get('MS_SECURITY')}/api/users/${user_id}`,
-        { headers: { Authorization: token } }
-      )
-
-      if (!user || !user._id) {
-        return response.status(400).json({
-          status: 'error',
-          message: 'Usuario inválido o incompleto en ms-security',
-        })
-      }
+      const user = await this.getUser(user_id, token)
 
       const exists = await Operario.query().where('user_id', user_id).first()
       if (exists) {
@@ -94,6 +82,7 @@ export default class OperariosController {
     }
   }
 
+  // Actualizar operario
   public async update({ params, request, response }: HttpContextContract) {
     try {
       const operario = await Operario.findOrFail(params.id)
@@ -116,9 +105,21 @@ export default class OperariosController {
     }
   }
 
+  // Eliminar operario
   public async destroy({ params, response }: HttpContextContract) {
     const operario = await Operario.findOrFail(params.id)
     await operario.delete()
     return response.noContent()
+  }
+
+  // Función privada para consultar usuario en microservicio
+  private async getUser(userId: string, token?: string): Promise<User> {
+    const { data } = await axios.get<User>(
+      `${Env.get('MS_SECURITY')}/api/users/${userId}`,
+      {
+        headers: { Authorization: token || '' },
+      }
+    )
+    return data
   }
 }

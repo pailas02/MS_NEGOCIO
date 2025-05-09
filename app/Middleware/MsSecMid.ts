@@ -13,11 +13,7 @@ export default class MsSecMid {
       return response.status(401).json({ message: 'Unauthorized: Missing token' })
     }
 
-
-
     const token = theRequest.headers.authorization.replace('Bearer ', '')
-
-    // Normalizar la URL reemplazando IDs dinámicos con ":id"
     const normalizedUrl = theRequest.url.replace(/\/\d+(?=\/|$)/g, '/:id')
 
     const thePermission = {
@@ -26,8 +22,7 @@ export default class MsSecMid {
     }
 
     try {
-      // Llamada al microservicio de seguridad
-      const result = await axios.post(
+      const { data } = await axios.post(
         `${Env.get('MS_SECURITY')}/api/public/security/permissions-validation`,
         thePermission,
         {
@@ -37,10 +32,9 @@ export default class MsSecMid {
         }
       )
 
-      console.log('Respuesta de ms-security:', result.data)
+      console.log('Respuesta completa de ms-security:', data)
 
-      if (result.data === true) {
-        // Permitir el acceso si la validación es exitosa
+      if (data === true || data?.success === true) {
         await next()
       } else {
         console.log('Acceso denegado por ms-security')
@@ -48,6 +42,7 @@ export default class MsSecMid {
       }
     } catch (error) {
       console.error('Error al validar con ms-security:', error.message)
+      console.error('Detalles:', error.response?.data ?? error)
       return response.status(500).json({ message: 'Internal Server Error: Validation failed' })
     }
   }

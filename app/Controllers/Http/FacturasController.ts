@@ -3,42 +3,46 @@ import Factura from 'App/Models/Factura'
 import FacturaValidator from 'App/Validators/FacturaValidator'
 
 export default class FacturasController {
-  //create
-  public async create({ request }: HttpContextContract) {
-    const payload = await request.validate(FacturaValidator)
-    const theFactura = await Factura.create(payload)
-    return theFactura
-  }
+  // Listar facturas (paginadas o todas)
+  public async index({ request }: HttpContextContract) {
+    const { page, per_page } = request.qs()
 
-  //read
-  public async find({ request, params }: HttpContextContract) {
-    if (params.id) {
-      const theFactura = await Factura.findOrFail(params.id)
-      return theFactura
-    } else {
-      const data = request.all()
-      if ('page' in data && 'per_page' in data) {
-        const page = request.input('page', 1)
-        const perPage = request.input('per_page', 20)
-        return await Factura.query().paginate(page, perPage)
-      } else {
-        return await Factura.query()
-      }
+    if (page && per_page) {
+      return await Factura.query().paginate(Number(page), Number(per_page))
     }
+
+    return await Factura.all()
   }
 
-  //update    
-  public async update({ params, request }: HttpContextContract) {
+  // Obtener una factura por ID
+  public async show({ params }: HttpContextContract) {
+    return await Factura.findOrFail(params.id)
+  }
+
+  // Crear una factura
+  public async store({ request }: HttpContextContract) {
     const payload = await request.validate(FacturaValidator)
-    const theFactura = await Factura.findOrFail(params.id)
-    theFactura.merge(payload)
-    return await theFactura.save()
+    const factura = await Factura.create(payload)
+    return factura
   }
 
-  //delete
-  public async delete({ params, response }: HttpContextContract) {
-    const theFactura = await Factura.findOrFail(params.id)
-    await theFactura.delete()
-    response.status(204)
+  // Actualizar una factura
+  public async update({ params, request }: HttpContextContract) {
+    const factura = await Factura.findOrFail(params.id)
+    const payload = await request.validate(FacturaValidator)
+
+    factura.detalle = payload.detalle
+    factura.id_cuota = payload.id_cuota
+    factura.fechaPago = payload.fechaPago ?? null
+
+    await factura.save()
+    return factura
+  }
+
+  // Eliminar una factura
+  public async destroy({ params, response }: HttpContextContract) {
+    const factura = await Factura.findOrFail(params.id)
+    await factura.delete()
+    return response.noContent()
   }
 }

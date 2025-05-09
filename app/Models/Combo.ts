@@ -1,5 +1,5 @@
 import { DateTime } from 'luxon'
-import { BaseModel, BelongsTo, belongsTo, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, column, hasOne, HasOne, manyToMany, ManyToMany } from '@ioc:Adonis/Lucid/Orm'
 import Maquina from './Maquina'
 import Servicio from './Servicio'
 
@@ -19,16 +19,10 @@ export default class Combo extends BaseModel {
   })
   public maquinas: ManyToMany<typeof Maquina>
 
-  @belongsTo(() => Servicio, {
-    foreignKey: 'servicioId', // Foreign key on the Combo table
+  @hasOne(() => Servicio, {
+    foreignKey: 'comboId', // Clave foránea en la tabla "servicios"
   })
-  public servicio: BelongsTo<typeof Servicio>
-
-  @belongsTo(() => Servicio, {
-    foreignKey: 'servicioId', // Foreign key on the Combo table
-    localKey: 'id', // Local key on the Servicio table
-  })
-  public servicioId: BelongsTo<typeof Servicio>
+  public servicio: HasOne<typeof Servicio>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

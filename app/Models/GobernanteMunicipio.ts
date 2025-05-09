@@ -1,20 +1,43 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column } from '@ioc:Adonis/Lucid/Orm'
+import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
+import Gobernante from './Gobernante'
+import Departamento from './Departamento'
+import Municipio from './Municipio'
 
-export default class GobernanteMunicipio extends BaseModel {
+export default class GobernanteTerritorio extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
   public gobernanteId: number
+
   @column()
-  public municipioId: number
+  public tipo: 'departamento' | 'municipio' // define el tipo de territorio
+
   @column()
+  public territorioId: number // ID de municipio o departamento, según tipo
+
+  @column.dateTime()
   public fechaInicio: DateTime
-  @column()
+
+  @column.dateTime()
   public fechaFin: DateTime
-  @column()
-  public historico: string
+
+  @belongsTo(() => Gobernante)
+  public gobernante: BelongsTo<typeof Gobernante>
+
+  // Opcional: relaciones dinámicas si deseas acceder directamente
+  @belongsTo(() => Departamento, {
+    foreignKey: 'territorioId',
+    onQuery: (query) => query.where('tipo', 'departamento'),
+  })
+  public departamento: BelongsTo<typeof Departamento>
+
+  @belongsTo(() => Municipio, {
+    foreignKey: 'territorioId',
+    onQuery: (query) => query.where('tipo', 'municipio'),
+  })
+  public municipio: BelongsTo<typeof Municipio>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

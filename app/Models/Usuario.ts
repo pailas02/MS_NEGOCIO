@@ -7,17 +7,21 @@ export default class Usuario extends BaseModel {
   public id: number
 
   @column()
+  public userId: string  // ← Este es el ID externo del microservicio
+
+  @column()
   public nombre: string
+
   @column()
   public email: string
+
   @column()
   public password: string
 
-  @belongsTo(() => Chat , {
+  @belongsTo(() => Chat, {
     foreignKey: 'idChat',
   })
   public chats: BelongsTo<typeof Chat>
-
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

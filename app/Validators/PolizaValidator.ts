@@ -1,51 +1,25 @@
-import { schema, CustomMessages, rules } from '@ioc:Adonis/Core/Validator'
-import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
+import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
 
 export default class PolizaValidator {
-  constructor(protected ctx: HttpContextContract) {}
-
   public schema = schema.create({
-    idOperario: schema.number([
-       rules.exists({ table: 'operarios', column: 'id' }),
-       rules.unsigned()
+    idOperario: schema.number.optional([
+      rules.exists({ table: 'operarios', column: 'id' }),
     ]),
-    idMaquina: schema.number([
-       rules.exists({ table: 'maquinas', column: 'id' }),
-       rules.unsigned()
+    idMaquina: schema.number.optional([
+      rules.exists({ table: 'maquinas', column: 'id' }),
     ]),
     idSeguro: schema.number([
-       rules.exists({ table: 'seguros', column: 'id' }),
-       rules.unsigned()
+      rules.exists({ table: 'seguros', column: 'id' }),
     ]),
-    fechaInicio: schema.date({
-      format: 'yyyy-MM-dd',
-    }, [
-       rules.required()
-    ]),
-    fechaFin: schema.date({
-      format: 'yyyy-MM-dd',
-    }, [
-       rules.required()
-    ]),
-    estado: schema.enum(['activo', 'inactivo'] as const, [
-       rules.required(),
-    ]),
+    fechaInicio: schema.date(),
+    fechaFin: schema.date(),
+    estado: schema.string(),
   })
 
-  
   public messages: CustomMessages = {
-    'idOperario.required': 'El id del operario es obligatorio',
-    'idOperario.exists': 'El id del operario no existe',
-    'idOperario.unsigned': 'El id del operario debe ser un número positivo',
-    'idMaquina.required': 'El id de la máquina es obligatorio',
-    'idMaquina.exists': 'El id de la máquina no existe',
-    'idMaquina.unsigned': 'El id de la máquina debe ser un número positivo',
-    'idSeguro.required': 'El id del seguro es obligatorio',
-    'idSeguro.exists': 'El id del seguro no existe',
-    'idSeguro.unsigned': 'El id del seguro debe ser un número positivo',
-    'fechaInicio.required': 'La fecha de inicio es obligatoria',
-    'fechaFin.required': 'La fecha de fin es obligatoria',
+    'idOperario.exists': 'El operario no existe',
+    'idMaquina.exists': 'La máquina no existe',
+    'idSeguro.exists': 'El seguro no existe',
     'estado.required': 'El estado es obligatorio',
-    'estado.enum': 'El estado debe ser "activo" o "inactivo"',
   }
 }

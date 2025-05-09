@@ -6,39 +6,44 @@ export default class ServiciosController {
   // Crear servicio
   public async create({ request }: HttpContextContract) {
     const payload = await request.validate(ServicioValidator)
-    const theServicio = await Servicio.create(payload)
-    return theServicio
+    const servicio = await Servicio.create(payload)
+    return servicio
   }
 
-  // Consultar uno o varios
+  // Obtener uno o todos
   public async find({ request, params }: HttpContextContract) {
     if (params.id) {
-      const theServicio = await Servicio.findOrFail(params.id)
-      return theServicio
-    } else {
-      const data = request.all()
-      if ('page' in data && 'per_page' in data) {
-        const page = request.input('page', 1)
-        const perPage = request.input('per_page', 20)
-        return await Servicio.query().paginate(page, perPage)
-      } else {
-        return await Servicio.query()
-      }
+      return await Servicio.query()
+        .where('id', params.id)
+        .preload('combo') // si deseas incluir el combo asociado
+        .firstOrFail()
     }
+
+    const page = request.input('page')
+    const perPage = request.input('per_page')
+
+    const query = Servicio.query().preload('combo')
+
+    if (page && perPage) {
+      return await query.paginate(page, perPage)
+    }
+
+    return await query
   }
 
   // Actualizar servicio
   public async update({ params, request }: HttpContextContract) {
     const payload = await request.validate(ServicioValidator)
-    const theServicio = await Servicio.findOrFail(params.id)
-    theServicio.merge(payload)
-    return await theServicio.save()
+    const servicio = await Servicio.findOrFail(params.id)
+    servicio.merge(payload)
+    await servicio.save()
+    return servicio
   }
 
   // Eliminar servicio
   public async delete({ params, response }: HttpContextContract) {
-    const theServicio = await Servicio.findOrFail(params.id)
-    await theServicio.delete()
-    response.status(204)
+    const servicio = await Servicio.findOrFail(params.id)
+    await servicio.delete()
+    return response.status(204)
   }
 }

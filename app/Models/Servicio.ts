@@ -1,8 +1,6 @@
 import { DateTime } from 'luxon'
 import { BaseModel, BelongsTo, belongsTo, column } from '@ioc:Adonis/Lucid/Orm'
 import Combo from './Combo'
-import Cuota from './Cuota'
-import Evidancia from './Evidancia'
 
 export default class Servicio extends BaseModel {
   @column({ isPrimary: true })
@@ -35,20 +33,8 @@ export default class Servicio extends BaseModel {
   @column()
   public comboId: number
 
-  @column()
-  public cuotaId: number
-
-  @column()
-  public evidenciaId: number
-
   @belongsTo(() => Combo)
   public combo: BelongsTo<typeof Combo>
-
-  @belongsTo(() => Cuota)
-  public cuota: BelongsTo<typeof Cuota>
-
-  @belongsTo(() => Evidancia)
-  public evidencia: BelongsTo<typeof Evidancia>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

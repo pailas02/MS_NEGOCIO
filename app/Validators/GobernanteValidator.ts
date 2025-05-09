@@ -1,32 +1,38 @@
-import { schema, rules } from '@ioc:Adonis/Core/Validator'
+import { schema, rules, CustomMessages } from '@ioc:Adonis/Core/Validator'
+import type { HttpContextContract } from '@ioc:Adonis/Core/HttpContext'
 
-export default class CreateGobernanteValidator {
+export default class GobernanteValidator {
+  constructor(protected ctx: HttpContextContract) {}
+
   public schema = schema.create({
-    user_id: schema.string({}, []),
-
-    periodoInicio: schema.string({}, [
-      rules.regex(/^\d{4}-\d{2}-\d{2}$/), // Formato YYYY-MM-DD
+    user_id: schema.string({}, [
+      rules.required()
     ]),
 
-    periodoFin: schema.string({}, [
-      rules.regex(/^\d{4}-\d{2}-\d{2}$/),
+    tipo: schema.enum(['departamento', 'municipio'] as const),
+
+    periodoInicio: schema.date({ format: 'yyyy-MM-dd' }, [
+      rules.required()
     ]),
 
-    tipo: schema.enum(['municipio', 'departamento'] as const),
+    periodoFin: schema.date({ format: 'yyyy-MM-dd' }, [
+      rules.required()
+    ]),
 
-    territorio: schema.object().members({
-      municipio_id: schema.number.optional(),
-      departamento_id: schema.number.optional(),
+    territorio: schema.object.optional().members({
+      departamento_id: schema.number.optional([
+        rules.exists({ table: 'departamentos', column: 'id' })
+      ])
+      // municipio_id NO se valida aquí porque no se asigna en este punto
     }),
   })
 
-  public messages = {
-    'user_id.required': 'El ID de usuario es obligatorio',
-    'user_id.uuid': 'El ID de usuario debe ser un UUID válido',
-    'periodoInicio.required': 'El periodo de inicio es obligatorio',
-    'periodoInicio.regex': 'El periodo de inicio debe estar en formato YYYY-MM-DD',
-    'periodoFin.required': 'El periodo de fin es obligatorio',
-    'periodoFin.regex': 'El periodo de fin debe estar en formato YYYY-MM-DD',
-    'tipo.enum': 'El tipo debe ser "municipio" o "departamento"',
+  public messages: CustomMessages = {
+    'user_id.required': 'El campo user_id es obligatorio',
+    'tipo.required': 'El campo tipo es obligatorio',
+    'tipo.enum': 'El tipo debe ser "departamento" o "municipio"',
+    'periodoInicio.required': 'La fecha de inicio es obligatoria',
+    'periodoFin.required': 'La fecha de fin es obligatoria',
+    'territorio.departamento_id.exists': 'El departamento indicado no existe',
   }
 }

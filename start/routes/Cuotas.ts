@@ -1,9 +1,9 @@
 import Route from '@ioc:Adonis/Core/Route'
+
 Route.group(() => {
-    Route.get("/cuotas", "CuotasController.find");
-    Route.get("/cuotas/:id", "CuotasController.find");
-    Route.post("/cuotas", "CuotasController.create");
-    Route.put("/cuotas/:id", "CuotasController.update");
-    Route.delete("/cuotas/:id", "CuotasController.delete");
-    Route.post("/cuotas/:id/pay", "CuotasController.pay");
-});
+  Route.get('/', 'CuotasController.index')         // Listar cuotas
+  Route.get('/:id', 'CuotasController.show')       // Obtener una cuota por ID
+  Route.post('/', 'CuotasController.store')        // Crear una nueva cuota
+  Route.put('/:id', 'CuotasController.update')     // Actualizar una cuota existente
+  Route.delete('/:id', 'CuotasController.destroy') // Eliminar una cuota
+}).prefix('/cuotas')

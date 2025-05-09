@@ -1,39 +1,36 @@
 import { DateTime } from 'luxon'
-import { BaseModel, column, ManyToMany, manyToMany } from '@ioc:Adonis/Lucid/Orm'
-import Municipio from './Municipio'
-import Departameto from './Departamento'
+import { BaseModel, BelongsTo, HasMany, belongsTo, column, hasMany } from '@ioc:Adonis/Lucid/Orm'
+import Departamento from './Departamento'
+import GobernanteMunicipio from './GobernanteMunicipio'
 
 export default class Gobernante extends BaseModel {
   @column({ isPrimary: true })
   public id: number
 
   @column()
-  public user_id: string
+  public userId: string
 
   @column()
-  public periodoInicio: string
+  public tipo: 'departamento' | 'municipio'
 
   @column()
-  public periodoFin: string
+  public departamentoId?: number | null
 
-  @column()
-  public tipo: string
+  @column.date()
+  public periodoInicio: DateTime
 
+  @column.date()
+  public periodoFin: DateTime
 
-
-  @manyToMany(() => Municipio, {
-    pivotTable: 'gobernante_municipio',
-    pivotForeignKey: 'gobernante_id',  
-    pivotRelatedForeignKey: 'municipio_id', 
+  @belongsTo(() => Departamento, {
+    foreignKey: 'departamentoId',
   })
-  public municipios: ManyToMany<typeof Municipio>
+  public departamento: BelongsTo<typeof Departamento>
 
-  @manyToMany(() => Departameto, {
-    pivotTable: 'gobernante_departamento',
-    pivotForeignKey: 'gobernante_id',  
-    pivotRelatedForeignKey: 'departamento_id', 
+  @hasMany(() => GobernanteMunicipio, {
+    foreignKey: 'gobernanteId',
   })
-  public departamentos: ManyToMany<typeof Departameto>
+  public municipios: HasMany<typeof GobernanteMunicipio>
 
   @column.dateTime({ autoCreate: true })
   public createdAt: DateTime

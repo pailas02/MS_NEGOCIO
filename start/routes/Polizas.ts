@@ -1,8 +1,9 @@
 import Route from '@ioc:Adonis/Core/Route'
+
 Route.group(() => {
-    Route.get("/polizas", "PolizasController.find");
-    Route.get("/polizas/:id", "PolizasController.find");
-    Route.post("/polizas", "PolizasController.create");
-    Route.put("/polizas/:id", "PolizasController.update");
-    Route.delete("/polizas/:id", "PolizasController.delete");
-});
+  Route.get('/', 'PolizasController.index')        // Listar todas
+  Route.get('/:id', 'PolizasController.show')      // Ver una por ID
+  Route.post('/', 'PolizasController.store')       // Crear nueva
+  Route.put('/:id', 'PolizasController.update')    // Actualizar
+  Route.delete('/:id', 'PolizasController.destroy')// Eliminar
+}).prefix('/polizas')
